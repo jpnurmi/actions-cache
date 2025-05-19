@@ -1,116 +1,31 @@
-name: actions/cache
+name: Cross-OS cache
 
 on:
   push:
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
-  zstd:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-          - os: macos-latest
-          - os: windows-latest
-          - os: windows-11-arm
-
-    steps:
-      - run: choco install zstandard
-        if: ${{ matrix.os == 'windows-11-arm' }}
-
-      - run: zstd --version
-
   save:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-          - os: macos-latest
-          - os: windows-latest
-          - os: windows-11-arm
+    runs-on: windows-11-arm
 
     steps:
-      - run: choco install zstandard
-        if: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' }}
+      - run: echo "Hello from windows-11-arm" > hello.txt
 
-      - uses: actions/checkout@v4
-
-      - run: echo "Hello, ${{ matrix.os }}" > hello.txt
-
-      - name: Save ${{ matrix.os }}
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         id: cache-hello
         with:
           path: hello.txt
-          key: hello-${{ matrix.os }}
+          key: hello
           enableCrossOsArchive: true
 
   restore:
     needs: [save]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-          - os: macos-latest
-          - os: windows-latest
-          - os: windows-11-arm
+    runs-on: ubuntu-latest
 
     steps:
-      - run: choco install zstandard
-        if: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' }}
-
-      - uses: actions/checkout@v4
-
-      - name: Restore ubuntu-latest
-        uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v4
         with:
           path: hello.txt
-          key: hello-ubuntu-latest
+          key: hello
           enableCrossOsArchive: true
           fail-on-cache-miss: true
-
-      - name: Hello ubuntu-latest
-        run: cat hello.txt && rm hello.txt
-
-      - name: Restore macos-latest
-        uses: actions/cache/restore@v4
-        with:
-          path: hello.txt
-          key: hello-macos-latest
-          enableCrossOsArchive: true
-          fail-on-cache-miss: true
-
-      - name: Hello macos-latest
-        run: cat hello.txt && rm hello.txt
-      
-      - name: Restore windows-latest
-        uses: actions/cache/restore@v4
-        with:
-          path: hello.txt
-          key: hello-windows-latest
-          enableCrossOsArchive: true
-          fail-on-cache-miss: true
-
-      - name: Hello windows-latest
-        run: cat hello.txt && rm hello.txt
-
-      - name: Restore windows-11-arm
-        uses: actions/cache/restore@v4
-        with:
-          path: hello.txt
-          key: hello-windows-11-arm
-          enableCrossOsArchive: true
-          fail-on-cache-miss: true
-
-      - name: Hello windows-11-arm
-        run: cat hello.txt && rm hello.txt
