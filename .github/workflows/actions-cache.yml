@@ -9,6 +9,24 @@ defaults:
     shell: bash
 
 jobs:
+  debug:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+          - os: windows-11-arm
+
+    steps:
+      run: tar --version
+      continue-on-error: true
+
+      run: zstd --version
+      continue-on-error: true
+
   save:
     runs-on: ${{ matrix.os }}
     strategy:
