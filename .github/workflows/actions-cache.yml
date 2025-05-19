@@ -15,7 +15,7 @@ jobs:
         id: cache-hello
         with:
           path: hello.txt
-          key: hello
+          key: hello-key
           enableCrossOsArchive: true
 
   restore:
@@ -26,6 +26,6 @@ jobs:
       - uses: actions/cache/restore@v4
         with:
           path: hello.txt
-          key: hello
+          key: hello-key
           enableCrossOsArchive: true
           fail-on-cache-miss: true
