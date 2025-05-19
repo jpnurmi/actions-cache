@@ -9,7 +9,7 @@ defaults:
     shell: bash
 
 jobs:
-  debug:
+  zstd:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -21,11 +21,10 @@ jobs:
           - os: windows-11-arm
 
     steps:
-      - run: tar --version
-        continue-on-error: true
+      - run: choco install zstandard
+        if: ${{ matrix.os == 'windows-11-arm' }}
 
       - run: zstd --version
-        continue-on-error: true
 
   save:
     runs-on: ${{ matrix.os }}
