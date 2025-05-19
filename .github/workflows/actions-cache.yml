@@ -38,8 +38,13 @@ jobs:
           - os: windows-11-arm
 
     steps:
+      - run: choco install zstandard
+        if: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' }}
+
       - uses: actions/checkout@v4
+
       - run: echo "Hello, ${{ matrix.os }}" > hello.txt
+
       - name: Save ${{ matrix.os }}
         uses: actions/cache@v4
         id: cache-hello
@@ -61,6 +66,9 @@ jobs:
           - os: windows-11-arm
 
     steps:
+      - run: choco install zstandard
+        if: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' }}
+
       - uses: actions/checkout@v4
 
       - name: Restore ubuntu-latest
