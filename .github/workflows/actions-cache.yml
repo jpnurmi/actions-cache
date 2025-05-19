@@ -21,11 +21,11 @@ jobs:
           - os: windows-11-arm
 
     steps:
-      run: tar --version
-      continue-on-error: true
+      - run: tar --version
+        continue-on-error: true
 
-      run: zstd --version
-      continue-on-error: true
+      - run: zstd --version
+        continue-on-error: true
 
   save:
     runs-on: ${{ matrix.os }}
